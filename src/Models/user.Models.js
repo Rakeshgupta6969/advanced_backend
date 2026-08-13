@@ -19,7 +19,8 @@ const userSchema = new mongoose.Schema({
         minLength:[6,"length of the password should be more than the 6 length"],
         select:false
     }
-},{
+},
+{
     timestamps:true
 })
 

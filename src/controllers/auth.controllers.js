@@ -1,6 +1,7 @@
 const userModel = require("../Models/user.Models");
 const bcrypt = require("bcryptjs");
 const JWT  = require("jsonwebtoken");
+const emailService = require("../Services/Email.Services")
 require("dotenv").config();
 
 /** 
@@ -37,6 +38,7 @@ async function userRegister(req,res){
     token
    })
    
+   await emailService.sendRegistrationEmail(user.email,user.username);
 }
 
 /** 
