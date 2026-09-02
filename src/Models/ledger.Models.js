@@ -31,7 +31,6 @@ const ledgerSchema = new mongoose.Schema({
         required:[true,"Types of the ledger entry is required"],
         immutable:true
     }
-
 })
 
 function preventLedgerModification(){
