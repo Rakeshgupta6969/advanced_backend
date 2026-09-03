@@ -2,6 +2,7 @@ const transactionModel = require("../Models/Transaction.Models");
 const ledgerModel = require("../Models/ledger.Models");
 const accountModel = require("../Models/account.Models");
 const emailService = require("../Services/Email.Services");
+const mongoose = require("mongoose");
 
 
 // javascript documentation comments.
@@ -107,6 +108,64 @@ async function createTransaction(req,res){
         message:`Insufficient Amount,current amount is ${balance}, and request amount is ${amount}`
     })
   }
+   
+    
+  /**
+   * step 5: create transaction in pending state.  
+   */
+   
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  
+
+  const transaction = await transactionModel.create({
+     fromAccount,
+     toAccount,
+     amount,
+     idemPotencyKey,
+     status:"PENDING"
+  },{session});
+
+   
+  const debitLedgerEntry = await ledgerModel.create({
+     fromAccount,
+     amount,
+     transaction:transaction._id,
+     type:"DEBIT"
+  },{session});
+
+
+   const creditLedgerEntry = await ledgerModel.create({
+    toAccount,
+    amount,
+    transaction:transaction._id,
+    type:"CREDIT"
+   },{session});
+
+
+   transaction.status = "COMPLETED"
+   await transaction.save({session});
+
+   await transaction.commitTransaction();
+   session.endSession();
+
+
+   /**
+    *  * 10. Send Email Notification.
+    */
+
+   await emailService.sendTransactionEmail(
+   req.user.email,
+   req.user.username,
+   amount,
+   fromAccount,
+   toAccount 
+   );
+
+   return res.status(201).json({
+    message:"Transaction is completed successfully",
+    transaction: transaction
+   })
 
 }
 

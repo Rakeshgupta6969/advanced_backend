@@ -49,5 +49,21 @@ async  function  sendRegistrationEmail(userEmail, name) {
      await sendEmail(userEmail, subject, text, html);
 }
 
+async function  sendTransactionEmail(userEmail, name, amount, fromAccount, toAccount) {
+      const subject = 'Transaction Notification';     
+      const text = `Hello ${name},\n\nA transaction of amount ${amount} has been made from account ${fromAccount} to account ${toAccount}.\n\nBest regards,\nThe Team`;
+      const html = `<p>Hello ${name},</p><p>A transaction of amount ${amount} has been made from account ${fromAccount} to account ${toAccount}.</p><p>Best regards,<br>The Team</p>`;  
+      await sendEmail(userEmail, subject, text, html);
+}
 
-module.exports = {transporter, sendEmail, sendRegistrationEmail};
+async function sendTransactionFailureEmail(userEmail, name, amount, fromAccount, toAccount) {
+  const subject = 'Transaction Failure Notification';
+  const text = `Hello ${name},\n\nWe regret to inform you that a transaction of amount ${amount} from account ${fromAccount} to account ${toAccount} has failed.\n\nPlease check your account and try again.\n\nBest regards,\nThe Team`;
+  const html = `<p>Hello ${name},</p><p>We regret to inform you that a transaction of amount ${amount} from account ${fromAccount} to account ${toAccount} has failed.</p><p>Please check your account and try again.</p><p>Best regards,<br>The Team</p>`;
+  await sendEmail(userEmail, subject, text, html);
+}
+
+
+
+
+module.exports = {transporter, sendEmail, sendRegistrationEmail,sendTransactionEmail,sendTransactionFailureEmail};

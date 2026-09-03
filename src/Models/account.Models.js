@@ -28,7 +28,9 @@ timestamps:true
 )
 
 accountSchema.index({user : 1, status : 1});
+  
 
+// here we have to use the aggregation pile line of the mongodb.
 accountSchema.method.getBalance = async function(){
       const balanceData = await ledgerModel.aggregate([
         {$match:{account : this._id}},
@@ -57,12 +59,14 @@ accountSchema.method.getBalance = async function(){
             }
           }  
         },
+
         {
          $project:{
             _id:0,
             balance:{$subtract: ["$totalCredit","$totalDebit"]},
          }
         }
+        
       ]);
 
       if(balanceData.length == 0){
