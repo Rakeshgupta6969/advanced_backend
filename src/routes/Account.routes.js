@@ -19,4 +19,19 @@ router.post("/createAccount",MiddleWare.authMiddleware,accountController.createA
 
 
 
+/**
+ * fetch all accounts of a specific user.
+ * get: "/api/accounts/getAllAccounts"
+ */
+router.get("/getAllAccounts",MiddleWare.authMiddleware,accountController.getAllAccountOfUser);
+
+
+/**
+ * get account Balance of a specific user.
+ * get:"/api/accounts/currBalance"
+ */
+
+router.get("/currBalance/:accountId",MiddleWare.authMiddleware,accountController.getAccountBalance);
+
+
 module.exports = router;

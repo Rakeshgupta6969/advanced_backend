@@ -8,6 +8,13 @@ const accountSchema = new mongoose.Schema({
         required:[true,"Account must be associated with user"],
         index:true
     },
+     systemUser:{
+        type:Boolean,
+        default:false,
+        immutable:true,
+        select:false
+    },
+
     status:{
         type : String,
         enum:{
@@ -25,13 +32,13 @@ const accountSchema = new mongoose.Schema({
 {
 timestamps:true
 }
-)
+);
 
 accountSchema.index({user : 1, status : 1});
   
 
 // here we have to use the aggregation pile line of the mongodb.
-accountSchema.method.getBalance = async function(){
+accountSchema.methods.getBalance = async function(){
       const balanceData = await ledgerModel.aggregate([
         {$match:{account : this._id}},
 
@@ -49,7 +56,7 @@ accountSchema.method.getBalance = async function(){
             },
 
             totalCredit:{
-                $dum:{
+                $sum:{
                     $cond:[
                         {$eq:["$type","CREDIT"]},
                         "$amount",
