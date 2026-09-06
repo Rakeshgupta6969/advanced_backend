@@ -13,6 +13,10 @@ const transactionRouter = require("./routes/transaction.routes");
 
 app.use(express.json());
 app.use(cookieParser());
+ 
+app.get("/",(req,res) =>{
+    res.send("backend Ledger service is up and running");
+})
 
 app.use("/api/auth",authRouter);
 app.use("/api/accounts",accountRouter);
