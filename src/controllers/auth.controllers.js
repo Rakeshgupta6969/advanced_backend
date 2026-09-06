@@ -2,6 +2,7 @@ const userModel = require("../Models/user.Models");
 const bcrypt = require("bcryptjs");
 const JWT  = require("jsonwebtoken");
 const emailService = require("../Services/Email.Services")
+const tokenBlacklistModel = require("../Models/blackList.Models")
 require("dotenv").config();
 
 /** 
@@ -74,4 +75,37 @@ async function userLogin(req,res){
    })
 }
 
-module.exports = {userRegister,userLogin};
+
+
+
+/** 
+  *  userResister controller
+  * POST : /api/auth/logout
+*/
+
+async function userLogout(req,res){
+    const token  = req.cookies.token || req.headers.authorization?.split(" ")[1];
+    if(!token){
+      return res.status(200).json({
+        message:"User logged out successfully"
+      })
+    }
+
+    res.cookie("token",""); // clear the token.
+    await tokenBlacklistModel.create({
+      token:token
+    });
+    
+    
+    res.clearCookie("token",""); // clear the token.
+
+
+    return res.status(200).json({
+      message:"user logged out successfully"
+    })
+}
+
+
+
+
+module.exports = {userRegister,userLogin,userLogout};

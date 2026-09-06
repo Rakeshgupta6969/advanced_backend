@@ -18,4 +18,12 @@ post : /api/auth/login
 router.post("/login",authController.userLogin);
 
 
+/*
+post : /api/auth/logout
+*/
+
+router.post("/logout",authController.userLogout);
+
+
+
 module.exports = router;

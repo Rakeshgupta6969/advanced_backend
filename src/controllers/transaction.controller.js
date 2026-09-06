@@ -114,12 +114,13 @@ async function createTransaction(req,res){
   /**
    * step 5: create transaction in pending state.  
    */
-   
-  const session = await mongoose.startSession();
+   const session = await mongoose.startSession();
+   let transaction;
+   try{
   session.startTransaction();
   
 
-  const transaction = await transactionModel.create([{
+   transaction = await transactionModel.create([{
      fromAccount,
      toAccount,
      amount,
@@ -129,16 +130,19 @@ async function createTransaction(req,res){
 
    
   const debitLedgerEntry = await ledgerModel.create([{
-     fromAccount,
-     amount,
+     account:fromAccount,
+     amount:amount,
      transaction:transaction[0]._id,
      type:"DEBIT"
   }],{session});
 
+   await (() =>{
+      return new Promise((resolve) => setTimeout(resolve,50*1000));
+   })();
 
    const creditLedgerEntry = await ledgerModel.create([{
-    toAccount,
-    amount,
+     account:toAccount,
+     amount:amount,
     transaction:transaction[0]._id,
     type:"CREDIT"
    }],{session});
@@ -148,7 +152,36 @@ async function createTransaction(req,res){
    await transaction[0].save({session});
 
    await session.commitTransaction();
-   session.endSession();
+}
+catch(error){
+     await session.abortTransaction();
+
+    if(error.errorLabels?.includes("TransientTransactionError")){
+        return res.status(409).json({
+            message:"Transaction conflict, please retry"
+        });
+    }
+
+     if(error.code === 11000){
+        const existingTransaction =
+        await transactionModel.findOne({
+            idemPotencyKey
+        });
+
+        return res.status(200).json({
+            message:"Transaction already exists",
+            transaction:existingTransaction
+        });
+    }
+
+
+    return res.status(500).json({
+        message:error.message
+    });
+}
+finally{
+       session.endSession();
+}
 
 
    /**

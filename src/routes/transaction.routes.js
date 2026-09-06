@@ -9,10 +9,10 @@ const transactionRoutes = express.Router();
 
 
 /**
- * post: /api/transaction/
+ * post: /api/transaction/makeTransaction
  * create new transaction
  */
-transactionRoutes.post("/",middlerWare.authMiddleware,transactionController.createTransaction);
+transactionRoutes.post("/makeTransaction",middlerWare.authMiddleware,transactionController.createTransaction);
 
 
 /**
