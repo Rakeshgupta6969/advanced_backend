@@ -251,7 +251,9 @@ Implemented email notifications for:
 src
 │
 ├── controllers
-│
+|
+|-- Database
+|
 ├── models
 │
 ├── routes
