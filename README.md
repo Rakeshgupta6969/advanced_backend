@@ -278,7 +278,7 @@ git clone <repository-url>
 Move into project:
 
 ```bash
-cd Banking-Ledger-System
+cd Advanced_backend
 ```
 
 
