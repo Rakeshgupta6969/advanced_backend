@@ -9,6 +9,7 @@ const app = express();
 const authRouter = require("./routes/Auth.routes");
 const accountRouter = require("./routes/Account.routes");
 const transactionRouter = require("./routes/transaction.routes");
+const ledgerRouter = require("./routes/Ledger.routes");
 
 
 app.use(express.json());
@@ -21,6 +22,8 @@ app.get("/",(req,res) =>{
 app.use("/api/auth",authRouter);
 app.use("/api/accounts",accountRouter);
 app.use("/api/transaction",transactionRouter);
+app.use("/api/ledger/fetchLedger",ledgerRouter);
+
 
 
 

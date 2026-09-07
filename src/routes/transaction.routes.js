@@ -13,6 +13,7 @@ const transactionRoutes = express.Router();
  * create new transaction
  */
 transactionRoutes.post("/makeTransaction",middlerWare.authMiddleware,transactionController.createTransaction);
+transactionRoutes.get("/history",middlerWare.authMiddleware,transactionController.findHistoryTransaction);
 
 
 /**

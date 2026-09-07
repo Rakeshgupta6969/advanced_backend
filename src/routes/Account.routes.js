@@ -28,7 +28,7 @@ router.get("/getAllAccounts",MiddleWare.authMiddleware,accountController.getAllA
 
 /**
  * get account Balance of a specific user.
- * get:"/api/accounts/currBalance"
+ * get:"/api/accounts/currBalance:accountId"
  */
 
 router.get("/currBalance/:accountId",MiddleWare.authMiddleware,accountController.getAccountBalance);

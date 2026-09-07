@@ -205,8 +205,6 @@ finally{
 
 
 
-
-
 async function createInitialFundsTransactionViaSystemUser(req,res){
    const {toAccount,amount,idemPotencyKey} = req.body;
 
@@ -286,4 +284,25 @@ async function createInitialFundsTransactionViaSystemUser(req,res){
    })
 }
 
-module.exports = {createTransaction,createInitialFundsTransactionViaSystemUser};
+
+
+async function findHistoryTransaction(req,res){
+    const {accountId} = req.body;
+    const allTransaction = await transactionModel.find({fromAccount:accountId});
+
+    if(!allTransaction){
+        return res.status(200).json({
+            message:"No transaction happened"
+        })
+    }
+
+    return res.status(200).json({
+        message:"transactions Fetched successfully",
+        transaction:allTransaction
+    })
+}
+
+
+module.exports = {createTransaction,
+    createInitialFundsTransactionViaSystemUser,
+    findHistoryTransaction};
